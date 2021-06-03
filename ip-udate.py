@@ -1,4 +1,4 @@
-import sys, argparse, subprocess, re, json, os, pathlib
+import sys, argparse, subprocess, re, json, os, pathlib, copy
 
 interface = ""
 cmd = ['sudo', 'arp-scan', '--localnet']
@@ -63,7 +63,8 @@ def main():
         print('No matches found.')
         return 2
     
-    write = update.copy()
+    # Need a deep copy
+    write = copy.deepcopy(update)
     
     # Now we know there is at least 1 hit    
     for path, ptrn in update.items():
