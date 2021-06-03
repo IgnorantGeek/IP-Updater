@@ -75,23 +75,29 @@ def main():
             if type(ptrn) == list:
                 for i in range(0, len(ptrn)):
                     if f'&{key}' in ptrn[i]:
-                        tmp = re.sub(f'&{key}', value, ptrn[i])
-                        write[path][i] = tmp
+                        out = re.sub(f'&{key}', value, ptrn[i])
+                        write[path][i] = out
+
+                        update_str = re.sub(f'&{key}', r'\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}', ptrn[i])
+                        ptrn[i] = update_str
                         found = True
 
                 continue
 
             if f'&{key}' in ptrn:
-                tmp = re.sub(f'&{key}', value, ptrn)
-                write[path] = tmp
+                out = re.sub(f'&{key}', value, ptrn)
+                write[path] = out
+
+                update_str = re.sub(f'&{key}', r"\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}", ptrn)
+                update[path] = update_str
                 found = True
         
         if not found:
             update[path] = None
             write[path] = None
     
-    print(write)
-    print(update)
+    # print(write)
+    # print(update)
 
     # Now iterate through update and update all files who's value is not none
     # Inform user if the file does not exist and prompt to continue
@@ -110,24 +116,25 @@ def main():
         print(f'Reading file {path}')
         f = open(path, 'r')
         file_str = f.read()
+        f.close()
 
         if type(ptrn) == list:
-            for item in ptrn:
-                match = re.search(item, file_str)
+            for i in range(0, len(ptrn)):
+                match = re.search(ptrn[i], file_str)
                 if match:
                     print(f'MATCH FOUND: {match}')
+                    file_str = re.sub(ptrn[i], write[path][i], file_str)
         
         else:
             match = re.search(ptrn, file_str)
             if match:
                 print(f'MATCH FOUND: {match}')
-    
-
-    #TODO - Current issue: The second for loop is checking for entries WITH the new
-    #       IP address. So we need some way of checking for the base string, and replacing
-    #       it with the correct string. This means we will need an input array and an
-    #       output array, so we can store the 'find' string in the output array
-    #       Will need a generic regex pattern to path the ip 
+                file_str = re.sub(ptrn, write[path], file_str)
+        
+        # Rewrite file
+        f = open(path, 'w')
+        f.write(file_str)
+        f.close()
 
     # Out
     return 0
