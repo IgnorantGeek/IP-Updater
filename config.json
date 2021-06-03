@@ -1,0 +1,14 @@
+{
+    "test": "test",
+    "hitlist": {
+        "asrock": "",
+        "pi": "",
+        "test": ""
+    },
+    "update": {
+        "/home/nick/.ssh/config": ["Host Airforce1\n\tHostname &asrock",
+                                   "Host pi\n\tHostname &pi"],
+        "/home/nick/.zshrc": "alias \"af1\"=\"&asrock\"",
+        "/home/nick/.bashrc": "&test"
+    }
+}
