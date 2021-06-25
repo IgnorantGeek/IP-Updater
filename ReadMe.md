@@ -10,3 +10,8 @@
  - Start out with 2, since that is the easiest
  - Combine 1 and 3, and use the arp-scan code on github for now then create a modified one in the future to substitute
  - Eventually could have a standalone c version (down the road)
+
+
+## TODO
+ - Should we do this by MAC? Definitly have the option for it. Use keywords in config
+ - We had an issue where the .zshrc file wouldn't get updated, fix that 

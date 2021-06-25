@@ -1,13 +1,17 @@
 import sys, argparse, subprocess, re, json, os, pathlib, copy
 
-interface = ""
+interface = ''
 cmd = ['sudo', 'arp-scan', '--localnet']
+VER = '0.1.0 - 02/06/2021'
+INIT = 'IP-Updater'
 hitlist = {}
 update = {}
 write  = {}
 
 # --------- MAIN --------------------------------------------------------------
 def main():
+    print(f'{INIT} | v{VER}')
+
     arg = args()
 
     cfg_d = cfg()
@@ -35,6 +39,9 @@ def main():
 
     out = result.stdout.decode('UTF-8')
     err = result.stderr.decode('UTF-8')
+
+    if arg['raw']:
+        print(f'{out}\n-------------------------------------\n{err}')
 
     if err:
         print('Theres been a problem\n')
@@ -96,8 +103,8 @@ def main():
             update[path] = None
             write[path] = None
     
-    # print(write)
-    # print(update)
+    print(write)
+    print(update)
 
     # Now iterate through update and update all files who's value is not none
     # Inform user if the file does not exist and prompt to continue
@@ -162,6 +169,7 @@ def args():
 
     parser.add_argument('interface', metavar='I', type=str, help='The network interface to pass to arp-scan')
     parser.add_argument('-v', '--verbose', action='store_true', default=False, help='Enables extra logging messages')
+    parser.add_argument('-R', '--raw', action='store_true', help='Prints the raw output of and exits (for now?)')
 
     return vars(parser.parse_args())
 
