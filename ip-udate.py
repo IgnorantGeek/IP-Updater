@@ -1,8 +1,9 @@
+from json.decoder import JSONDecodeError
 import sys, argparse, subprocess, re, json, os, pathlib, copy
 
 interface = ''
 cmd = ['sudo', 'arp-scan', '--localnet']
-VER = '0.1.0 - 02/06/2021'
+VER = '0.2.1 - 28/06/2021'
 INIT = 'IP-Updater'
 hitlist = {}
 update = {}
@@ -16,23 +17,29 @@ def main():
 
     cfg_d = cfg()
 
+    if not cfg_d:
+        print('MISSING/INVALID CONFIG. ABORTING')
+        return 1
+
     for key, value in cfg_d.items():
-        if key == 'hitlist':
-            if type(value) is not dict:
-                print('INVALID HITLIST TYPE')
-                return 1
+        print(f'{key} : {value}')
+        # if key == 'hitlist':
+        #     if type(value) is not dict:
+        #         print('INVALID HITLIST TYPE')
+        #         return 1
             
-            hitlist = value
+        #     hitlist = value
         
-        if key == 'update':
-            if type(value) is not dict:
-                print('INVALID UPDATE TYPE')
-                return 1
+        # if key == 'update':
+        #     if type(value) is not dict:
+        #         print('INVALID UPDATE TYPE')
+        #         return 1
             
-            update = value
+        #     update = value
+
+    return 1
 
     cmd.append(f"--interface={arg['interface']}")
-
     if arg['verbose']: print(f'RAW CMD: {cmd}')
 
     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -112,7 +119,7 @@ def main():
         if not ptrn: continue
 
         if not os.path.isfile(path):
-            print(f"The file '{path} could not be found.")
+            print(f"The file '{path}' could not be found.")
             answer = input("Would you like to continue? Enter 'n' to exit, or press Enter to continue\n")
 
             if answer.lower().startswith('n'):
@@ -148,6 +155,19 @@ def main():
 
 
 
+# --------- HOST CLASS --------------------------------------------------------
+class Host:
+    name = ''
+    hitlist = []
+    mac  = ''
+    update = {}
+
+
+    def __init__(self, name, obj_str):
+        self.name = name
+
+        # need to process the object string and fill in values
+
 # --------- FUNCTIONS ---------------------------------------------------------
 def get_dir():
     return os.path.abspath(__file__)
@@ -161,7 +181,12 @@ def cfg():
     
     f = open(cfg_path, 'r')
 
-    return json.loads(f.read())
+    try:
+        out = json.loads(f.read())
+    except JSONDecodeError as e:
+        print(f'There has been an error decoding the config file: {e.msg}')
+        return None
+    return out
 
 
 def args():
@@ -169,7 +194,7 @@ def args():
 
     parser.add_argument('interface', metavar='I', type=str, help='The network interface to pass to arp-scan')
     parser.add_argument('-v', '--verbose', action='store_true', default=False, help='Enables extra logging messages')
-    parser.add_argument('-R', '--raw', action='store_true', help='Prints the raw output of and exits (for now?)')
+    parser.add_argument('-R', '--raw', action='store_true', help='Prints the raw output and exits (for now?)')
 
     return vars(parser.parse_args())
 

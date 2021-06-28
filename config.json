@@ -1,11 +1,16 @@
 {
-    "test": "test",
-    "hitlist": {
-        "asrock": "",
-        "pi": ""
+    "Airforce1 - Server": {
+        "description": "asrock",
+        "mac": "d0:50:99:98:08:e8",
+        "update": {
+            "/home/nick/.ssh/config": "Host Airforce1\n\tHostname &&"
+        }
     },
-    "update": {
-        "/home/nick/.ssh/config": ["Host Airforce1\n\tHostname &asrock",
-                                   "Host pi\n\tHostname &pi"]
+    "Raspberry Pi": {
+        "description": "Raspberry Pi",
+        "mac": "b8:27:eb:5a:5a:57",
+        "update": {
+            "/home/nick/.ssh/config": "Host pi\n\tHostname &&"
+        }
     }
 }

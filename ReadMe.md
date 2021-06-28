@@ -13,5 +13,6 @@
 
 
 ## TODO
- - Should we do this by MAC? Definitly have the option for it. Use keywords in config
  - We had an issue where the .zshrc file wouldn't get updated, fix that 
+ - We should change the format of the config file. An entry should be a 'machine' to look for. Specify attributes such as
+   description 'hitlist', MAC address, etc.... then the files/patterns that you want to update.
