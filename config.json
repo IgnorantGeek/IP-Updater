@@ -7,7 +7,7 @@
         }
     },
     "Raspberry Pi": {
-        "description": "Raspberry Pi",
+        "description": ["Raspberry","Pi"],
         "mac": "b8:27:eb:5a:5a:57",
         "update": {
             "/home/nick/.ssh/config": "Host pi\n\tHostname &&"

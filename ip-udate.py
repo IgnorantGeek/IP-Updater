@@ -1,13 +1,13 @@
 from json.decoder import JSONDecodeError
 import sys, argparse, subprocess, re, json, os, pathlib, copy
 
-interface = ''
 cmd = ['sudo', 'arp-scan', '--localnet']
 VER = '0.2.1 - 28/06/2021'
 INIT = 'IP-Updater'
 hitlist = {}
 update = {}
 write  = {}
+hosts  = []
 
 # --------- MAIN --------------------------------------------------------------
 def main():
@@ -22,22 +22,13 @@ def main():
         return 1
 
     for key, value in cfg_d.items():
-        print(f'{key} : {value}')
-        # if key == 'hitlist':
-        #     if type(value) is not dict:
-        #         print('INVALID HITLIST TYPE')
-        #         return 1
-            
-        #     hitlist = value
-        
-        # if key == 'update':
-        #     if type(value) is not dict:
-        #         print('INVALID UPDATE TYPE')
-        #         return 1
-            
-        #     update = value
+        try:
+            host = Host(key, value)
+        except TypeError:
+            print(f'Failed to add host - {key}')
+            continue
 
-    return 1
+        hosts.append(host)
 
     cmd.append(f"--interface={arg['interface']}")
     if arg['verbose']: print(f'RAW CMD: {cmd}')
@@ -157,16 +148,22 @@ def main():
 
 # --------- HOST CLASS --------------------------------------------------------
 class Host:
-    name = ''
-    hitlist = []
-    mac  = ''
+    name   = ''
+    desc   = ''
+    mac    = ''
     update = {}
 
 
-    def __init__(self, name, obj_str):
+    def __init__(self, name, obj):
         self.name = name
 
         # need to process the object string and fill in values
+        if type(obj) is not dict:
+            raise TypeError("Argument 2 not of type 'dict'")
+
+        if 'description' in obj and obj['description']:
+            self.desc = obj['description']
+
 
 # --------- FUNCTIONS ---------------------------------------------------------
 def get_dir():
